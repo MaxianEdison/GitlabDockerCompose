@@ -33,3 +33,4 @@ Volumes in "gitlab-ce" container
 Volumes in "gitlab-runner" container
       - '/var/run/docker.sock:/var/run/docker.sock'
       - '/srv/gitlab/gitlab-runner:/etc/gitlab-runner'
+And finally all containers use "gitlab" network.
