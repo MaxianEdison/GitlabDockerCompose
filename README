@@ -9,7 +9,7 @@ Usage:
 $ git clone https://github.com/MaxianEdison/GitlabDockerCompose.git
 
 2. Run the following command
-$ docker-compose run [-d]
+$ cd GitlabDockerCompose && docker-compose run [-d]
 Note: if you want see logs don't use -d option otherwise use.
 
 Short description:
