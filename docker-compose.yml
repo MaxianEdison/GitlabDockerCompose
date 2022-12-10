@@ -1,0 +1,144 @@
+version: '3.6'
+
+services:
+  web:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    hostname: ''
+    container_name: gitlab-ce
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        #=================================================================================
+        external_url ''
+        nginx['redirect_http_to_https'] = true
+        registry_external_url ''
+        registry_nginx['redirect_http_to_https'] = true
+        #registry_nginx['listen_port'] = 5678
+        #=================================================================================
+        letsencrypt['enable'] = true
+        letsencrypt['contact_emails'] = ['']
+        # Renew every 7th day of the month at 12:30
+        letsencrypt['auto_renew_hour'] = "12"
+        letsencrypt['auto_renew_minute'] = "30"
+        letsencrypt['auto_renew_day_of_month'] = "*/7"
+        #=================================================================================
+        gitlab_rails['manage_backup_path'] = true
+        gitlab_rails['backup_path'] = '/var/opt/gitlab/backups'
+        gitlab_rails['backup_archive_permissions'] = 0644
+        gitlab_rails['backup_pg_schema'] = 'public'
+        gitlab_rails['bakup_keep_time'] = 604800
+        gitlab_rails['backup_upload_connection'] = {
+          'provider' => 'AWS',
+          'region' => 'eu-central-1',
+          'aws_access_key_id' => '',
+          'aws_secret_access_id' => '',
+          'endpoint' => '',
+          'bucket' => '',
+          'aws_signature_version' => '2'
+        }
+        gitlab_rails['backup_upload_remote_directory'] = ''
+        #================================================================================
+        gitlab_rails['object_store']['enabled'] = true
+        gitlab_rails['object_store']['proxy_download'] = true
+        gitlab_rails['object_store']['connection'] = {
+          'provider' => 'AWS',
+          'region' => 'eu-central-1',
+          'aws_access_key_id' => '',
+          'aws_secret_access_key' => '',
+          'endpoint' => '',
+          'bucket' => '',
+          'aws_signature_version' => '2'
+        }
+        #=================================================================================
+        gitlab_rails['artifacts_enabled'] = true
+        gitlab_rails['artifacts_object_store_enabled'] = true
+        gitlab_rails['artifacts_object_store_remote_directory'] = "artifacts"
+        gitlab_rails['artifacts_object_store_connection'] = {
+          'provider' => 'AWS',
+          'region' => 'eu-central-1',
+          'aws_access_key_id' => '',
+          'aws_secret_access_key' => '',
+          'endpoint' => '',
+          'bucket' => '',
+          'aws_signature_version' => '2'
+        }
+        #=================================================================================
+        gitlab_rails['external_diffs_enabled'] = true
+        gitlab_rails['external_diffs_object_store_enabled'] = true
+        gitlab_rails['external_diffs_object_store_remote_directory'] = "external-diffs"
+        gitlab_rails['external_diffs_object_store_connection'] = {
+          'provider' => 'AWS',
+          'region' => 'eu-central-1',
+          'aws_access_key_id' => '',
+          'aws_secret_access_key' => '',
+          'endpoint' => '',
+          'bucket' => '',
+          'aws_signature_version' => '2'
+        }
+        #=================================================================================
+        gitlab_rails['uploads_object_store_enabled'] = true
+        gitlab_rails['uploads_object_store_remote_directory'] = "uploads"
+        gitlab_rails['uploads_object_store_connection'] = {
+          'provider' => 'AWS',
+          'region' => 'eu-central-1',
+          'aws_access_key_id' => '',
+          'aws_secret_access_key' => '',
+          'endpoint' => '',
+          'bucket' => '',
+          'aws_signature_version' => '2'
+        }
+        #=================================================================================
+        gitlab_rails['smtp_enable'] = true
+        gitlab_rails['smtp_address'] = 'smtp.gmail.com'
+        gitlab_rails['smtp_port'] = 587
+        gitlab_rails['smtp_user_name'] = ''
+        gitlab_rails['smtp_password'] = ''
+        gitlab_rails['smtp_domain'] = 'smtp.gmail.com'
+        gitlab_rails['smtp_authentication'] = 'login'
+        gitlab_rails['smtp_enable_starttls_auto'] = true
+        gitlab_rails['smtp_tls'] = false
+        gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
+        #=================================================================================
+        registry['storage'] = {
+          's3' => {
+            'accesskey' => '',
+            'secretkey' => '',
+            'bucket' => '',
+            'region' => 'eu-cental-1',
+            'regionendpoint' => '',
+            'maxrequestspersecond' => 100,
+            'encrypt' => true
+          },
+          'redirect' => {
+            'disable' => true
+          }
+        }
+    ports:
+      - '80:80'
+      - '443:443'
+      - '2222:22'
+    volumes:
+      - '/srv/gitlab/config:/etc/gitlab'
+      - '/srv/gitlab/logs:/var/log/gitlab'
+      - '/srv/gitlab/data:/var/opt/gitlab'
+    networks:
+      - gitlab
+
+
+  gitlab_runner:
+    image: 'gitlab/gitlab-runner:latest'
+    container_name: gitlab-runner
+    restart: always
+    depends_on:
+      - web
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/srv/gitlab/gitlab-runner:/etc/gitlab-runner'
+    networks:
+      - gitlab
+    shm_size: '256m'
+
+
+networks:
+  gitlab:
+    name: gitlab-network
