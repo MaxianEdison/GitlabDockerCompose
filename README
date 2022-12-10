@@ -10,4 +10,6 @@ $ git clone https://github.com/MaxianEdison/GitlabDockerCompose.git
 
 2. Run the following command
 $ docker-compose run [-d]
+Note: if you want see logs don't use -d option otherwise use.
 
+After going through the above steps, two container with name "gitlab-ce" and "gitlab-runner" will be executed.(This operation may take several minutes)
