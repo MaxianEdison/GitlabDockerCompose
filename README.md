@@ -19,10 +19,7 @@ $ cd GitlabDockerCompose && docker-compose run [-d]
 
 ## Short description
 
-After going through the above steps, two container with names "gitlab-ce" and "gitlab-runner" 
-will be executed.(This operation may take several minutes)
-After runnung this two containers you must change password(for root user). 
-for this purpose see [this](https://docs.gitlab.com/ee/security/reset_user_password.html)
+After going through the above steps, two container with names "gitlab-ce" and "gitlab-runner" will be executed(This operation may take several minutes)
+After runnung this two containers you must change password(for root user) for this purpose see [this](https://docs.gitlab.com/ee/security/reset_user_password.html)
 
-After changing root password, you can login to the Gitlab server.
-Now it's time to register Gitlab Runner with help of this [guide](https://docs.gitlab.com/runner/register/)
+After changing root password, you can login to the Gitlab server. Now it's time to register Gitlab Runner with help of this [guide](https://docs.gitlab.com/runner/register/)
