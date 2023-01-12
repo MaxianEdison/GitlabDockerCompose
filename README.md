@@ -11,7 +11,8 @@ A ready to use docker compose configuration for gitlab server and gitlab runner.
 
 ```
 $ git clone https://github.com/MaxianEdison/GitlabDockerCompose.git
-
+```
+```
 $ cd GitlabDockerCompose && docker-compose run [-d]
 ```
 
